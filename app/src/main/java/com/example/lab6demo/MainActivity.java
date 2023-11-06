@@ -1,12 +1,16 @@
 package com.example.lab6demo;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,17 +35,20 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: add to database
 
+        MyDBHandler dbHandler = new MyDBHandler(this);
+        dbHandler.addProduct(product);
+
         productBox.setText("");
-
         skuBox.setText("");
-
     }
 
 
     public void lookupProduct (View view) {
 
         // TODO: get from Database
-        Product product = null;
+
+        MyDBHandler dbHandler = new MyDBHandler(this);
+        Product product = dbHandler.findProduct(productBox.getText().toString());
 
         if (product != null) {
             idView.setText(String.valueOf(product.getID()));
@@ -55,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
     public void removeProduct (View view) {
 
         // TODO: remove from database
-        boolean result = false;
+
+        MyDBHandler dbHandler = new MyDBHandler(this);
+        boolean result = dbHandler.deleteProduct(productBox.getText().toString());
 
         if (result) {
             idView.setText("Record Deleted");
@@ -66,8 +75,5 @@ public class MainActivity extends AppCompatActivity {
             idView.setText("No Match Found");
     }
 
-    public void about(View view) {
-        Intent aboutIntent = new Intent(this, About.class);
-        startActivity(aboutIntent);
-    }
+
 }
